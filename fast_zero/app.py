@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fast_zero.schemas import UserSchema, UserPublic, UserDB, UserList
 
 database = []   # fake database for simulation.
@@ -16,3 +16,13 @@ def create_user(user: UserSchema):
 @app.get('/users/', response_model=UserList)
 def list_users():
     return {'users': database}
+
+
+@app.put('/users/{user_id}', response_model=UserPublic)
+def update_user(user_id: int, user: UserSchema):
+    if user_id > len(database) or user_id < 1:
+        raise HTTPException(status_code=404, detail='User not found')
+
+    user_db = UserPublic(**user.model_dump(), id=user_id)
+    database[user_id - 1] = user_db
+    return user_db

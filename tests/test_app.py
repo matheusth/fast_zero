@@ -28,3 +28,20 @@ def test_list_users():
     assert response.json() == {
         'users': [{'id': 1, 'username': 'string', 'email': 'user@example.com'}]
     }
+
+
+def test_update_user_is_workin():
+    response = client.put(
+        '/users/1',
+        json={
+            'username': 'string2',
+            'email': 'user2@example.com',
+            'password': 'string',
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == {
+        'id': 1,
+        'username': 'string2',
+        'email': 'user2@example.com',
+    }
