@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fast_zero.schemas import UserSchema, UserPublic, UserDB, UserList
+from fast_zero.schemas import UserSchema, UserPublic, UserDB, UserList, Message
 
 database = []   # fake database for simulation.
 
@@ -26,3 +26,12 @@ def update_user(user_id: int, user: UserSchema):
     user_db = UserPublic(**user.model_dump(), id=user_id)
     database[user_id - 1] = user_db
     return user_db
+
+
+@app.delete('/users/{user_id}', response_model=Message)
+def delete_user(user_id: int):
+    if user_id > len(database) or user_id < 1:
+        raise HTTPException(status_code=404, detail='User not found')
+
+    del database[user_id - 1]
+    return {'detail': 'User deleted'}

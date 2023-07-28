@@ -45,3 +45,9 @@ def test_update_user_is_workin():
         'username': 'string2',
         'email': 'user2@example.com',
     }
+
+
+def test_delete_user():
+    response = client.delete('/users/1')
+    assert response.status_code == 200
+    assert response.json() == {'detail': 'User deleted'}
