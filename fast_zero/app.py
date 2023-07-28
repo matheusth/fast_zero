@@ -1,8 +1,13 @@
 from fastapi import FastAPI
+from fast_zero.schemas import UserSchema, UserPublic, UserDB
+
+database = []   # fake database for simulation.
 
 app = FastAPI()
 
 
-@app.get('/')
-def read_root():
-    return {'message': 'Olá mundo!'}
+@app.post('/users/', status_code=201, response_model=UserPublic)
+def create_user(user: UserSchema):
+    user_db = UserDB(**user.model_dump(), id=len(database) + 1)
+    database.append(user_db)
+    return UserPublic(**user_db.model_dump())
